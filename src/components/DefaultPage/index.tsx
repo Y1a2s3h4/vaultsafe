@@ -11,16 +11,19 @@ export default function DefaultPage() {
   function handleAddNewTab() {
     dispatch(addNewTab());
   }
-  const handleAddCurrTabData = (e, idx) => {
+  const handleAddCurrTabData = (
+    e: React.ChangeEvent<HTMLTextAreaElement>,
+    idx: number
+  ) => {
     dispatch(addCurrTabData({ tabDetail: e.target.value, idx }));
   };
-
+  const uuid_v4: string = v4();
   return (
     <div className="flex flex-col gap-5 items-center h-screen">
       <div className="flex flex-wrap gap-5 text-lg w-full md:w-4/5">
-        {tabs.map((ele, idx) => (
+        {tabs.map((_, idx) => (
           <button
-            key={v4()}
+            key={uuid_v4}
             onClick={() => setToggleTab(idx)}
             className={`px-5 py-3 ${
               toggleTab === idx ? "active-link" : ""
