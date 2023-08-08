@@ -22,6 +22,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
       .then(() => console.log("Connected to MongoDB"))
       .catch((err) => console.log(err));
       
+      console.log(event)
     const body = JSON.parse(event.body);
     const {
       urlName,
