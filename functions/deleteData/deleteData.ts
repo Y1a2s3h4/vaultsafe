@@ -24,21 +24,14 @@ export const handler: Handler = async (event: HandlerEvent) => {
       
       console.log(event)
     const body = JSON.parse(event.body);
-    const {
-      urlName,
-      pswd,
-      tabsList
-    } = body;
-    const vaultSafeObject = await VaultSafeModel.create({
-      urlName,
-      pswd,
-      tabsList
-    });
-    console.log(vaultSafeObject)
-    vaultSafeObject.save();
-    return { statusCode: 200, body: JSON.stringify({ statusCode: 200, ...vaultSafeObject.toObject() }) };
+    const { _id, tabId } = body;
+    await VaultSafeModel.updateMany(
+      { _id },
+      { $pull: { tabsList: { _id: tabId } } }
+    );
+    return { statusCode: 200, body: JSON.stringify({ statusCode: 200, ...(await VaultSafeModel.findOne({_id})).toObject() }) };
   } catch (error) {
     console.log(error)
-    return { statusCode: 500, body: JSON.stringify({ statusCode: 500, ...error}) };
+    return { statusCode: 500, body: JSON.stringify({ statusCode: 500, ...error }) };
   }
 }

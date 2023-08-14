@@ -1,9 +1,9 @@
 import dotenv from 'dotenv';
-import { Handler } from '@netlify/functions';
+import { Handler, HandlerEvent } from '@netlify/functions';
 import VaultSafeModel from '../vaultSafeModel';
 import mongoose, { ConnectOptions } from 'mongoose';
 
-export const handler: Handler = async () => {
+export const handler: Handler = async (event: HandlerEvent) => {
   try {
     dotenv.config({
       path: "functions\\.env",
@@ -18,12 +18,33 @@ export const handler: Handler = async () => {
       } as ConnectOptions)
       .then(() => console.log("Connected to MongoDB"))
       .catch((err) => console.log(err));
+    
+    const urlName = event?.queryStringParameters?.urlName;
+    console.log({urlName})
 
-    const vaultSafeObjects = await VaultSafeModel.find({});
-
-    return { statusCode: 200, body: JSON.stringify(vaultSafeObjects) };
+    if(!urlName){
+      const result = await VaultSafeModel.find({})
+      return { statusCode: 200, body: JSON.stringify({ statusCode: 200, result })};
+    } else {
+      
+      const result = (await VaultSafeModel.findOne({urlName}))
+      if(!result){
+        return { statusCode: 404, body: JSON.stringify({
+          statusCode: 404, 
+          urlName, 
+          tabsList: [{
+            tabNo: 0,
+            tabDetail: ""
+          }]
+          })
+        }
+      }
+      
+      return { statusCode: 200, body: JSON.stringify({statusCode: 200,...result.toObject()}) };
+    }
+    
   } catch (error) {
     console.log(error);
-    return { statusCode: 500, body: JSON.stringify(error) };
+    return { statusCode: 500, body: JSON.stringify({statusCode: 500, ...error}) };
   }
 };

@@ -10,8 +10,8 @@ interface IVaultSafe extends Document {
 }
 
 const VaultSafeSchema: Schema = new Schema({
-  urlName: { type: String, required: true },
-  pswd: { type: String, required: true },
+  urlName: { type: String, required: true, },
+  pswd: { type: String },
   tabsList: [
     {
       tabNo: { type: Number },
