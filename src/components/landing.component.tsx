@@ -12,10 +12,10 @@ export default function LandingComponent() {
       </p>
       <Link
         to="/new"
-        className="flex bg-black text-white font-poppins font-light max-sm:px-7 max-sm:py-5 px-8 py-6 max-sm:text-lg text-xl rounded-xl"
+        className="flex bg-black text-white font-poppins font-light max-sm:px-6 max-sm:py-4 px-8 py-6 max-sm:text-lg text-xl rounded-xl"
       >
         Start Using Me
-        <img className="self-center ml-4" src={ArrowRight} alt="ArrowRight" />
+        <img className="arr-right w-12 self-center ml-4" src={ArrowRight} alt="ArrowRight" />
       </Link>
     </div>
   );

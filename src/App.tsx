@@ -16,7 +16,7 @@ function App() {
   return (
     <>
       <Router>
-        <div className="relative h-screen overflow-hidden">
+        <div className="relative h-screen overflow-x-hidden lg:overflow-hidden">
           <NavbarComponent />
           <Routes>
             <Route

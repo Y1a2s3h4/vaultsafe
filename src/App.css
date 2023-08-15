@@ -8,7 +8,7 @@
   color: #fff;
   background-color: #171717;
 }
-.landing-wrapper > button > img {
+.landing-wrapper .arr-right {
   transform: translateX(0);
   animation: move 2.8s forwards infinite ease-in-out;
 }
