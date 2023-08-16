@@ -27,6 +27,7 @@ export default function DefaultPage() {
   const MySwal = withReactContent(Swal);
 
   const [toggleTab, setToggleTab] = useState(0);
+  const [disableSave, setDisableSave] = useState(true);
   const tabs = useSelector((state: RootState) => state.tabHandler);
   const dispatch = useDispatch();
 
@@ -131,6 +132,7 @@ export default function DefaultPage() {
     }
   }
   function handleDeleteTab(idx) {
+    setDisableSave(false)
     dispatch(
       deleteTab({
         idx,
@@ -166,7 +168,8 @@ export default function DefaultPage() {
             </h1>
             <button
               onClick={handleSave}
-              className={`px-4 py-2 active-link border border-black rounded-md`}
+              disabled={disableSave}
+              className={`px-4 py-2 disabled:opacity-75 disabled:cursor-not-allowed active-link border border-black rounded-md`}
             >
               Save
             </button>
@@ -209,7 +212,10 @@ export default function DefaultPage() {
         </div>
         <textarea
           value={tabs?.data?.tabsList[toggleTab]?.tabDetail}
-          onChange={(e) => handleAddCurrTabData(e, toggleTab)}
+          onChange={(e) => {
+            handleAddCurrTabData(e, toggleTab)
+            setDisableSave(false);
+          }}
           className="p-4 text-xl rounded-lg border border-gray-600 w-full md:w-4/5 h-full shadow-2xl"
           placeholder="Start Typing From Here..."
         ></textarea>

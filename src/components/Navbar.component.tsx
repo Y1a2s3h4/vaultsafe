@@ -1,25 +1,16 @@
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import BrandLogo from "../assets/logo.svg";
 import MenuIcon from "../assets/menu.svg";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 export default function NavbarComponent() {
+  const navigate = useNavigate()
   const [toggle, setToggle] = useState(false);
-  const [colorChange, setColorChange] = useState(false);
-  const changeNavbarColor = () => {
-    console.log("Calling Scroll Event")
-    if (window.scrollY >= 80) {
-        setColorChange(true);
-    }
-    else {
-        setColorChange(false);
-    }
-  };
-  window.addEventListener('scroll', changeNavbarColor);
+  
   return (
-    <div className={`sticky top-0 left-0 z-20 max-md:px-4 max-md:py-8 py-12 px-16 ${colorChange ? 'bg-white' : ''}`}>
+    <div className={`sticky top-0 left-0 z-20 max-md:px-4 max-md:py-8 py-12 px-16 max-md:bg-white md:max-lg:backdrop-blur`}>
       <nav className="flex justify-between">
         <div className="brand-logo">
-          <img className="max-md:w-[32px] self-center" src={BrandLogo} alt="dr-sangeeta-logo" />
+          <img onClick={()=>navigate("/")} className="max-md:w-[32px] self-center cursor-pointer" src={BrandLogo} alt="dr-sangeeta-logo" />
         </div>
         <img
           className="max-md:w-10 w-14 self-center lg:hidden block"

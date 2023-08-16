@@ -12,12 +12,14 @@ function BGComponent() {
     </>
   );
 }
+
 function App() {
+  
   return (
     <>
       <Router>
         <div className="relative h-screen overflow-x-hidden lg:overflow-hidden">
-          <NavbarComponent />
+          <NavbarComponent/>
           <Routes>
             <Route
               path="/"
