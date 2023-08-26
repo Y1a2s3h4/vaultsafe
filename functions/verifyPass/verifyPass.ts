@@ -24,13 +24,30 @@ export const handler: Handler = async (event: HandlerEvent) => {
       
       console.log(event)
     const body = JSON.parse(event.body);
-    const { _id, tabId } = body;
-    console.log({ _id, tabId })
-    await VaultSafeModel.updateMany(
-      { _id },
-      { $pull: { tabsList: { _id: tabId } } }
-    );
-    return { statusCode: 200, body: JSON.stringify({ statusCode: 200, ...(await VaultSafeModel.findOne({_id})).toObject() }) };
+    const { urlName, pswd } = body;
+    const vaultSafeResult = await VaultSafeModel.findOne({ urlName });
+    console.log({vaultSafeResult})
+    if(vaultSafeResult?.pswd === pswd){
+        return { statusCode: 200, body: JSON.stringify({ statusCode: 200, ...vaultSafeResult?.toObject() }) };
+    } else if (!vaultSafeResult) {
+      const vaultSafeObject = await VaultSafeModel.create({
+        urlName,
+        pswd,
+        tabsList: [{
+          tabNo: 0,
+          tabDetail: ""
+        }]
+      });
+    vaultSafeObject.save();
+
+        return { statusCode: 404, body: JSON.stringify({ 
+          statusCode: 404, 
+          ...vaultSafeObject.toObject()
+        }) 
+      };
+    } else {
+        return { statusCode: 401, body: JSON.stringify({ statusCode: 401, message: 'Incorrect Password.' }) };
+    }
   } catch (error) {
     console.log(error)
     return { statusCode: 500, body: JSON.stringify({ statusCode: 500, ...error }) };

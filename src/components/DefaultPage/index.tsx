@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useLocation } from "react-router-dom";
-import type { RootState } from "../../redux/store/store";
+import type { AppDispatch, RootState } from "../../redux/store/store";
 import { useSelector, useDispatch } from "react-redux";
 
-import Hotkeys from "react-hot-keys";
 import {
   addNewTab,
   addCurrTabData,
@@ -19,6 +18,7 @@ import { useNavigate } from "react-router-dom";
 
 import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
+import { TabsDataState } from "../../types";
 
 export default function DefaultPage() {
   const location = useLocation();
@@ -28,8 +28,10 @@ export default function DefaultPage() {
 
   const [toggleTab, setToggleTab] = useState(0);
   const [disableSave, setDisableSave] = useState(true);
-  const tabs = useSelector((state: RootState) => state.tabHandler);
-  const dispatch = useDispatch();
+  const tabs: TabsDataState = useSelector(
+    (state: RootState) => state.tabHandler
+  );
+  const dispatch = useDispatch<AppDispatch>();
 
   function handleAddNewTab() {
     dispatch(addNewTab());
@@ -40,7 +42,7 @@ export default function DefaultPage() {
   ) => {
     dispatch(addCurrTabData({ tabDetail: e.target.value, idx }));
   };
-  const [title, setTitle] = useState(null);
+  const [title, setTitle] = useState<string>("");
 
   useEffect(() => {
     if (!(location.pathname === "/new")) {
@@ -111,8 +113,8 @@ export default function DefaultPage() {
         confirmButtonColor: "#3085d6",
         showCancelButton: true,
         preConfirm: () => {
-          const pass = MySwal.getPopup().querySelector("#swal-input1").value;
-          const cpass = MySwal.getPopup().querySelector("#swal-input2").value;
+          const pass = (MySwal?.getPopup()?.querySelector("#swal-input1") as HTMLInputElement)?.value;
+          const cpass = (MySwal?.getPopup()?.querySelector("#swal-input2") as HTMLInputElement)?.value;
           console.log(pass, cpass);
           if (!pass || !cpass) {
             MySwal.showValidationMessage(`Please enter password`);
@@ -125,25 +127,27 @@ export default function DefaultPage() {
       dispatch(
         addTabsData({
           urlName: title,
-          pswd: saveDetails?.value?.pass,
-          tabsList: tabs.data,
+          pswd: saveDetails.value?.pass ?? '',
+          tabsList: tabs.data.tabsList,
         })
       );
     }
   }
-  function handleDeleteTab(idx) {
-    setDisableSave(false)
+  function handleDeleteTab(idx: number) {
+    setDisableSave(false);
     dispatch(
       deleteTab({
         idx,
       })
     );
-    dispatch(
-      deleteTabsData({
-        _id: tabs.data._id,
-        tabId: tabs.data.tabsList[idx]._id,
-      })
-    );
+    if(tabs.data.statusCode === 200){
+      dispatch(
+        deleteTabsData({
+          _id: tabs.data._id,
+          tabId: tabs.data.tabsList[idx]._id,
+        })
+      );
+    }
   }
   console.log(tabs);
 
@@ -156,11 +160,10 @@ export default function DefaultPage() {
           return true;
         }}
       > */}
+
       <div className="flex flex-col gap-5 items-center h-screen px-5">
         {!(location.pathname === "/new") && (
-          <div 
-          key={v4()}
-          className="flex items-start w-full md:w-4/5">
+          <div key={v4()} className="flex items-start w-full md:w-4/5">
             <h1 className="font-bold text-3xl text-left self-center mr-2">
               {!title && location.pathname === "/new"
                 ? title
@@ -169,14 +172,14 @@ export default function DefaultPage() {
             <button
               onClick={handleSave}
               disabled={disableSave}
-              className={`px-4 py-2 disabled:opacity-75 disabled:cursor-not-allowed active-link border border-black rounded-md`}
+              className={`px-5 py-2 disabled:opacity-75 disabled:cursor-not-allowed active-link border border-black rounded-md`}
             >
-              Save
+              <span className="self-center">Save</span>
             </button>
           </div>
         )}
         <div className="flex flex-wrap gap-5 text-lg w-full md:w-4/5">
-          {tabs?.data?.tabsList?.map((_, idx) => (
+          {tabs.data.tabsList.map((_, idx: number) => (
             <div className="relative">
               <button
                 key={v4()}
@@ -210,15 +213,23 @@ export default function DefaultPage() {
             <span className="mb-1">&#43;</span>
           </button>
         </div>
-        <textarea
-          value={tabs?.data?.tabsList[toggleTab]?.tabDetail}
-          onChange={(e) => {
-            handleAddCurrTabData(e, toggleTab)
-            setDisableSave(false);
-          }}
-          className="p-4 text-xl rounded-lg border border-gray-600 w-full md:w-4/5 h-full shadow-2xl"
-          placeholder="Start Typing From Here..."
-        ></textarea>
+        <div className="relative w-full md:w-4/5 h-full mx-auto">
+          <textarea
+            value={tabs?.data?.tabsList[toggleTab]?.tabDetail}
+            disabled={tabs.isLoading}
+            onChange={(e) => {
+              handleAddCurrTabData(e, toggleTab);
+              setDisableSave(false);
+            }}
+            className="p-4 z-10 text-xl rounded-lg border border-gray-600 w-full h-full shadow-2xl"
+            placeholder="Start Typing From Here..."
+          ></textarea>
+          {tabs.isLoading ? (
+            <div className="absolute top-0 left-0 z-20 rounded-lg bg-[#ffffff50] w-full h-full flex justify-center items-center ">
+              <div className="ms-2 self-center spinner w-6 md:w-16 h-6 md:h-16 border-solid border-black border-4 rounded-full border-r-transparent border-b-transparent animate-spin"></div>
+            </div>
+          ) : null}
+        </div>
       </div>
       {/* </Hotkeys> */}
     </>

@@ -1,13 +1,13 @@
 import { Link, useNavigate } from "react-router-dom";
 import BrandLogo from "../assets/logo.svg";
 import MenuIcon from "../assets/menu.svg";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 export default function NavbarComponent() {
   const navigate = useNavigate()
   const [toggle, setToggle] = useState(false);
   
   return (
-    <div className={`sticky top-0 left-0 z-20 max-md:px-4 max-md:py-8 py-12 px-16 max-md:bg-white md:max-lg:backdrop-blur`}>
+    <div className={`sticky top-0 left-0 z-20 max-md:px-4 max-md:py-8 py-12 px-16 max-md:bg-white md:max-lg:backdrop-blur mb-5`}>
       <nav className="flex justify-between">
         <div className="brand-logo">
           <img onClick={()=>navigate("/")} className="max-md:w-[32px] self-center cursor-pointer" src={BrandLogo} alt="dr-sangeeta-logo" />
