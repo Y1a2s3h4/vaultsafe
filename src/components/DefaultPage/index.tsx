@@ -50,26 +50,36 @@ export default function DefaultPage() {
       setTitle(decodeURIComponent(location.pathname.slice(1)));
       dispatch(
         fetchTabsData(decodeURIComponent(location.pathname.slice(1)))
-      ).then(async (res) => {
+      )
+      .then(async (res) => {
           if(res.payload.statusCode === 200){
+            setDisableSave(true)
             await MySwal.fire({
               icon: "info",
               allowOutsideClick: false,
               allowEscapeKey: false,
               title: "<p>This Site Belongs To You?</p>",
-              html: "Enter password to access this site\n<form><input type='password' autocomplete id='swal-pass1' class='swal2-input' placeholder='Password...'></form>",
+              input: "password",
+              inputPlaceholder: "Enter Password...",
+              inputValidator: (value: string) => {
+                if (!value) {
+                  return "Please enter password`";
+                } else if (value !== res.payload.pswd) {
+                  return(`Incorrect Password`);
+                }
+                // if (!pass) {
+                //   MySwal.showValidationMessage(`Please enter password`);
+                // } else if (pass !== res.payload.pswd) {
+                //   MySwal.showValidationMessage(`Incorrect Password`);
+                // }
+              },
               showCancelButton: true,
               confirmButtonText: "Unlock!",
               confirmButtonColor: "#3085d6",
-              preConfirm: () => {
-                const pass = (MySwal?.getPopup()?.querySelector("#swal-pass1") as HTMLInputElement)?.value;
-                console.log(pass);
-                if (!pass) {
-                  MySwal.showValidationMessage(`Please enter password`);
-                } else if (pass !== res.payload.pswd) {
-                  MySwal.showValidationMessage(`Incorrect Password`);
-                }
-              },
+            }).then((result) => {
+              if (result.isConfirmed) {
+                setDisableSave(false)
+              }
             })
           }
       });
@@ -233,7 +243,7 @@ export default function DefaultPage() {
         </div>
         <div className="relative w-full md:w-4/5 h-full mx-auto">
           <textarea
-            value={tabs?.data?.tabsList[toggleTab]?.tabDetail}
+            value={!disableSave ? tabs?.data?.tabsList[toggleTab]?.tabDetail : ''}
             disabled={tabs.isLoading}
             onChange={(e) => {
               handleAddCurrTabData(e, toggleTab);

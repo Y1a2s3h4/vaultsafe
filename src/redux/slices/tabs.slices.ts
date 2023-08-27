@@ -8,6 +8,11 @@ import {
 const API_URL = import.meta.env.PROD
   ? import.meta.env.VITE_API_URL_PROD
   : import.meta.env.VITE_API_URL_DEV;
+console.log({
+  API_URL,
+  VITE_API_URL_PROD: import.meta.env.VITE_API_URL_PROD,
+  VITE_API_URL_DEV: import.meta.env.VITE_API_URL_DEV
+})
 export const fetchTabsData = createAsyncThunk(
   "tabsData/get",
   async (urlName: string) => {
