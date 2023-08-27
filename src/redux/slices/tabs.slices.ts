@@ -1,59 +1,58 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { TabsDataState, UpdateTabDataApi, DeleteTabApi, AddTabsDataApi } from "../../types";
-
+import {
+  TabsDataState,
+  UpdateTabDataApi,
+  DeleteTabApi,
+  AddTabsDataApi,
+} from "../../types";
+const API_URL = import.meta.env.PROD
+  ? import.meta.env.VITE_API_URL_PROD
+  : import.meta.env.VITE_API_URL_DEV;
 export const fetchTabsData = createAsyncThunk(
   "tabsData/get",
   async (urlName: string) => {
-    const response = await fetch(
-      `http://localhost:8888/.netlify/functions/getData?urlName=${urlName}`
-    );
+    const response = await fetch(`${API_URL}getData?urlName=${urlName}`);
     return response.json();
   }
 );
 
-export const addTabsData = createAsyncThunk("tabsData/add", async (data: AddTabsDataApi) => {
-  console.log(data);
-  const response = await fetch(
-    "http://localhost:8888/.netlify/functions/addData",
-    {
+export const addTabsData = createAsyncThunk(
+  "tabsData/add",
+  async (data: AddTabsDataApi) => {
+    console.log(data);
+    const response = await fetch(`${API_URL}addData`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
-    }
-  );
-  return response.json();
-});
+    });
+    return response.json();
+  }
+);
 export const updateTabsData = createAsyncThunk(
   "tabsData/update",
   async (data: UpdateTabDataApi) => {
-    const response = await fetch(
-      "http://localhost:8888/.netlify/functions/updateData",
-      {
-        method: "PATCH",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    const response = await fetch(`${API_URL}updateData`, {
+      method: "PATCH",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
     return response.json();
   }
 );
 export const deleteTabsData = createAsyncThunk(
   "tabsData/delete",
   async (data: DeleteTabApi) => {
-    const response = await fetch(
-      "http://localhost:8888/.netlify/functions/deleteData",
-      {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      }
-    );
+    const response = await fetch(`${API_URL}deleteData`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
     return response.json();
   }
 );
@@ -63,7 +62,7 @@ const initialState: TabsDataState = {
   data: {
     tabsList: [],
   },
-}
+};
 export const tabHandlerSlice = createSlice({
   name: "tabsData",
   initialState,
