@@ -50,8 +50,28 @@ export default function DefaultPage() {
       setTitle(decodeURIComponent(location.pathname.slice(1)));
       dispatch(
         fetchTabsData(decodeURIComponent(location.pathname.slice(1)))
-      ).then((res) => {
-        localStorage.setItem("urlData", JSON.stringify(res.payload));
+      ).then(async (res) => {
+          if(res.payload.statusCode === 200){
+            await MySwal.fire({
+              icon: "info",
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              title: "<p>This Site Belongs To You?</p>",
+              html: "Enter password to access this site\n<form><input type='password' autocomplete id='swal-pass1' class='swal2-input' placeholder='Password...'></form>",
+              showCancelButton: true,
+              confirmButtonText: "Unlock!",
+              confirmButtonColor: "#3085d6",
+              preConfirm: () => {
+                const pass = (MySwal?.getPopup()?.querySelector("#swal-pass1") as HTMLInputElement)?.value;
+                console.log(pass);
+                if (!pass) {
+                  MySwal.showValidationMessage(`Please enter password`);
+                } else if (pass !== res.payload.pswd) {
+                  MySwal.showValidationMessage(`Incorrect Password`);
+                }
+              },
+            })
+          }
       });
     } else {
       handleAddNewTab();
@@ -85,7 +105,6 @@ export default function DefaultPage() {
         })
         .then((result) => {
           if (result.isConfirmed) {
-            setTitle(result.value);
             navigate(`/${result.value}`);
           }
           if (result.isDismissed) {
@@ -95,7 +114,7 @@ export default function DefaultPage() {
     }
   }, [location]);
   async function handleSave() {
-    if (tabs.data.statusCode === 200) {
+    if (tabs.data._id && tabs.data.statusCode === 200) {
       dispatch(
         updateTabsData({
           _id: tabs.data._id,
@@ -140,11 +159,11 @@ export default function DefaultPage() {
         idx,
       })
     );
-    if(tabs.data.statusCode === 200){
+    if(tabs.data._id && tabs.data.statusCode === 200){
       dispatch(
         deleteTabsData({
           _id: tabs.data._id,
-          tabId: tabs.data.tabsList[idx]._id,
+          tabId: tabs.data.tabsList[idx]._id ?? '',
         })
       );
     }
@@ -180,9 +199,8 @@ export default function DefaultPage() {
         )}
         <div className="flex flex-wrap gap-5 text-lg w-full md:w-4/5">
           {tabs.data.tabsList.map((_, idx: number) => (
-            <div className="relative">
+            <div className="relative" key={v4()}>
               <button
-                key={v4()}
                 onClick={() => setToggleTab(idx)}
                 className={`px-5 py-3 ${
                   toggleTab === idx ? "active-link" : ""

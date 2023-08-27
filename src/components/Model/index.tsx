@@ -8,7 +8,7 @@ interface ModalProps {
   children: ReactNode;
 }
 
-const Modal: React.FC<ModalProps> = ({ isOpen, onClose, children }) => {
+const Modal: React.FC<ModalProps> = ({ isOpen, children }) => {
   const navigate = useNavigate();
   const modalContainerClass = isOpen ? "fixed inset-0 flex items-center justify-center" : "hidden";
   const modalContentClass = isOpen ? "w-full md:w-1/2 md:h-1/2 border bg-white rounded-lg p-4 z-50 flex items-center justify-center" : "hidden";
