@@ -73,13 +73,13 @@ export default function DefaultPage() {
                 //   MySwal.showValidationMessage(`Incorrect Password`);
                 // }
               },
-              showCancelButton: true,
               confirmButtonText: "Unlock!",
               confirmButtonColor: "#3085d6",
             }).then((result) => {
               if (result.isConfirmed) {
                 setDisableSave(false)
               }
+              
             })
           }
       });
