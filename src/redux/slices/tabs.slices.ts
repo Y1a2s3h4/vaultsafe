@@ -5,14 +5,15 @@ import {
   DeleteTabApi,
   AddTabsDataApi,
 } from "../../types";
-const API_URL = import.meta.env.PROD
-  ? import.meta.env.VITE_API_URL_PROD
-  : import.meta.env.VITE_API_URL_DEV;
+const API_URL = import.meta.env.DEV
+  ? import.meta.env.VITE_API_URL_DEV
+  : import.meta.env.VITE_API_URL_PROD;
 console.log({
   API_URL,
+  PROD: import.meta.env.PROD,
   VITE_API_URL_PROD: import.meta.env.VITE_API_URL_PROD,
-  VITE_API_URL_DEV: import.meta.env.VITE_API_URL_DEV
-})
+  VITE_API_URL_DEV: import.meta.env.VITE_API_URL_DEV,
+});
 export const fetchTabsData = createAsyncThunk(
   "tabsData/get",
   async (urlName: string) => {
