@@ -169,7 +169,7 @@ export default function DefaultPage() {
         idx,
       })
     );
-    if(tabs.data._id && tabs.data.statusCode === 200){
+    if(tabs.data._id && tabs.data.tabsList[idx]._id && tabs.data.statusCode === 200){
       dispatch(
         deleteTabsData({
           _id: tabs.data._id,
