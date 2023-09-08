@@ -4,16 +4,11 @@ import {
   UpdateTabDataApi,
   DeleteTabApi,
   AddTabsDataApi,
+  VerifyUrlApi,
 } from "../../types";
 const API_URL = import.meta.env.DEV
   ? import.meta.env.VITE_API_URL_DEV
   : import.meta.env.VITE_API_URL_PROD;
-console.log({
-  API_URL,
-  PROD: import.meta.env.PROD,
-  VITE_API_URL_PROD: import.meta.env.VITE_API_URL_PROD,
-  VITE_API_URL_DEV: import.meta.env.VITE_API_URL_DEV,
-});
 export const fetchTabsData = createAsyncThunk(
   "tabsData/get",
   async (urlName: string) => {
@@ -21,11 +16,23 @@ export const fetchTabsData = createAsyncThunk(
     return response.json();
   }
 );
+export const verifyUrlPass = createAsyncThunk(
+  "tabsData/verify",
+  async (data: VerifyUrlApi) => {
+    const response = await fetch(`${API_URL}verifyPass`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    });
+    return response.json();
+  }
+);
 
 export const addTabsData = createAsyncThunk(
   "tabsData/add",
   async (data: AddTabsDataApi) => {
-    console.log(data);
     const response = await fetch(`${API_URL}addData`, {
       method: "POST",
       headers: {
@@ -144,6 +151,20 @@ export const tabHandlerSlice = createSlice({
       .addCase(deleteTabsData.rejected, (state) => {
         state.isLoading = false;
         console.log("Delete Error: " + state.isError);
+        state.isError = true;
+      })
+      .addCase(verifyUrlPass.pending, (state) => {
+        state.isLoading = true;
+        state.isError = false;
+      })
+      .addCase(verifyUrlPass.fulfilled, (state, action) => {
+        state.isLoading = false;
+        state.isError = false;
+        state.data = { ...action.payload };
+      })
+      .addCase(verifyUrlPass.rejected, (state) => {
+        state.isLoading = false;
+        console.log("Authentication Error: " + state.isError);
         state.isError = true;
       });
   },

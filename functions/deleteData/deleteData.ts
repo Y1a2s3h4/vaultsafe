@@ -21,16 +21,14 @@ export const handler: Handler = async (event: HandlerEvent) => {
       } as ConnectOptions)
       .then(() => console.log("Connected to MongoDB"))
       .catch((err) => console.log(err));
-      
-      console.log(event)
     const body = JSON.parse(event.body);
     const { _id, tabId } = body;
-    console.log({ _id, tabId })
     await VaultSafeModel.updateMany(
       { _id },
       { $pull: { tabsList: { _id: tabId } } }
     );
-    return { statusCode: 200, body: JSON.stringify({ statusCode: 200, ...(await VaultSafeModel.findOne({_id})).toObject() }) };
+    const result = await VaultSafeModel.findOne({_id}, {'_id':1,'urlName':1, 'tabsList':1, '__v':1})
+    return { statusCode: 200, body: JSON.stringify({ statusCode: 200, ...result.toObject() }) };
   } catch (error) {
     console.log(error)
     return { statusCode: 500, body: JSON.stringify({ statusCode: 500, ...error }) };

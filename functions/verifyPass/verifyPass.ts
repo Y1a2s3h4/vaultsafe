@@ -22,31 +22,19 @@ export const handler: Handler = async (event: HandlerEvent) => {
       .then(() => console.log("Connected to MongoDB"))
       .catch((err) => console.log(err));
       
-      console.log(event)
     const body = JSON.parse(event.body);
     const { urlName, pswd } = body;
     const vaultSafeResult = await VaultSafeModel.findOne({ urlName });
-    console.log({vaultSafeResult})
     if(vaultSafeResult?.pswd === pswd){
-        return { statusCode: 200, body: JSON.stringify({ statusCode: 200, ...vaultSafeResult?.toObject() }) };
-    } else if (!vaultSafeResult) {
-      const vaultSafeObject = await VaultSafeModel.create({
-        urlName,
-        pswd,
-        tabsList: [{
-          tabNo: 0,
-          tabDetail: ""
-        }]
-      });
-    vaultSafeObject.save();
+      const {['pswd']:_, ...rest} = vaultSafeResult.toObject()
 
-        return { statusCode: 404, body: JSON.stringify({ 
-          statusCode: 404, 
-          ...vaultSafeObject.toObject()
-        }) 
-      };
+        return { statusCode: 200, body: JSON.stringify({ statusCode: 200, ...rest }) };
     } else {
-        return { statusCode: 401, body: JSON.stringify({ statusCode: 401, message: 'Incorrect Password.' }) };
+        return { statusCode: 401, body: JSON.stringify({ statusCode: 401, urlName, 
+          tabsList: [{
+            tabNo: 0,
+            tabDetail: ""
+          }], message: 'Incorrect Password.' }) };
     }
   } catch (error) {
     console.log(error)

@@ -21,8 +21,6 @@ export const handler: Handler = async (event: HandlerEvent) => {
       } as ConnectOptions)
       .then(() => console.log("Connected to MongoDB"))
       .catch((err) => console.log(err));
-      
-      console.log(event)
     const body = JSON.parse(event.body);
     const {
       urlName,
@@ -34,9 +32,10 @@ export const handler: Handler = async (event: HandlerEvent) => {
       pswd,
       tabsList
     });
-    console.log(vaultSafeObject)
     vaultSafeObject.save();
-    return { statusCode: 200, body: JSON.stringify({ statusCode: 200, ...vaultSafeObject.toObject() }) };
+    const {['pswd']:_, ...rest} = vaultSafeObject.toObject()
+
+    return { statusCode: 200, body: JSON.stringify({ statusCode: 200, ...rest.toObject() }) };
   } catch (error) {
     console.log(error)
     return { statusCode: 500, body: JSON.stringify({ statusCode: 500, ...error}) };

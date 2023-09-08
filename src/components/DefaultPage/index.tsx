@@ -8,6 +8,7 @@ import {
   addCurrTabData,
   deleteTab,
   fetchTabsData,
+  verifyUrlPass,
   addTabsData,
   updateTabsData,
   deleteTabsData,
@@ -46,7 +47,6 @@ export default function DefaultPage() {
 
   useEffect(() => {
     if (!(location.pathname === "/new")) {
-      console.log(location.pathname);
       setTitle(decodeURIComponent(location.pathname.slice(1)));
       dispatch(
         fetchTabsData(decodeURIComponent(location.pathname.slice(1)))
@@ -58,20 +58,23 @@ export default function DefaultPage() {
               icon: "info",
               allowOutsideClick: false,
               allowEscapeKey: false,
-              title: "<p>This Site Belongs To You?</p>",
+              title: `<p>${decodeURIComponent(location.pathname.slice(1))} Already Exist!\nIf This Site Belongs To You?</p>`,
               input: "password",
               inputPlaceholder: "Enter Password...",
-              inputValidator: (value: string) => {
+              inputValidator: async (value: string) => {
                 if (!value) {
                   return "Please enter password`";
-                } else if (value !== res.payload.pswd) {
-                  return(`Incorrect Password`);
+                } else {
+                  const verifyResult = await dispatch(
+                    verifyUrlPass({
+                      pswd: value,
+                      urlName: decodeURIComponent(location.pathname.slice(1)),
+                    })
+                  )
+                  if(verifyResult.payload.statusCode === 401){
+                    return "Incorrect Password"
+                  }
                 }
-                // if (!pass) {
-                //   MySwal.showValidationMessage(`Please enter password`);
-                // } else if (pass !== res.payload.pswd) {
-                //   MySwal.showValidationMessage(`Incorrect Password`);
-                // }
               },
               confirmButtonText: "Unlock!",
               confirmButtonColor: "#3085d6",
@@ -144,7 +147,6 @@ export default function DefaultPage() {
         preConfirm: () => {
           const pass = (MySwal?.getPopup()?.querySelector("#swal-input1") as HTMLInputElement)?.value;
           const cpass = (MySwal?.getPopup()?.querySelector("#swal-input2") as HTMLInputElement)?.value;
-          console.log(pass, cpass);
           if (!pass || !cpass) {
             MySwal.showValidationMessage(`Please enter password`);
           } else if (pass !== cpass) {
@@ -178,7 +180,6 @@ export default function DefaultPage() {
       );
     }
   }
-  console.log(tabs);
 
   return (
     <>

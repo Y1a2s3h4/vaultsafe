@@ -20,7 +20,6 @@ export const handler: Handler = async (event: HandlerEvent) => {
       .catch((err) => console.log(err));
     
     const urlName = event?.queryStringParameters?.urlName;
-    console.log({urlName})
 
     if(!urlName){
       const result = await VaultSafeModel.find({})
@@ -39,8 +38,8 @@ export const handler: Handler = async (event: HandlerEvent) => {
           })
         }
       }
-      
-      return { statusCode: 200, body: JSON.stringify({statusCode: 200,...result.toObject()}) };
+      const {['pswd']:_, ...rest} = result.toObject()
+      return { statusCode: 200, body: JSON.stringify({statusCode: 200,...rest}) };
     }
     
   } catch (error) {

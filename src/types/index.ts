@@ -31,3 +31,8 @@ export interface AddTabsDataApi {
   pswd: string;
   tabsList: Tab[];
 }
+
+export interface VerifyUrlApi {
+  urlName: string;
+  pswd: string;
+}
