@@ -36,3 +36,7 @@ export interface VerifyUrlApi {
   urlName: string;
   pswd: string;
 }
+
+export interface ErrorBoundaryState {
+  hasError: boolean;
+}
