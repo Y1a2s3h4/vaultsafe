@@ -172,14 +172,14 @@ export default function DefaultPage() {
         idx,
       })
     );
-    if(tabs.data._id && tabs.data.tabsList[idx]._id && tabs.data.statusCode === 200){
-      dispatch(
-        deleteTabsData({
-          _id: tabs.data._id,
-          tabId: tabs.data.tabsList[idx]._id ?? '',
-        })
-      );
-    }
+    // if(tabs.data._id && tabs.data.tabsList[idx]._id && tabs.data.statusCode === 200){
+    //   dispatch(
+    //     deleteTabsData({
+    //       _id: tabs.data._id,
+    //       tabId: tabs.data.tabsList[idx]._id ?? '',
+    //     })
+    //   );
+    // }
   }
 
   return (
@@ -212,7 +212,7 @@ export default function DefaultPage() {
           </div>
         )}
         <div className="flex flex-wrap gap-5 text-lg w-full md:w-4/5">
-          {tabs.data.tabsList.map((_, idx: number) => (
+          {tabs.data.tabsList.map((tab, idx: number) => (
             <div className="relative" key={v4()}>
               <button
                 onClick={() => setToggleTab(idx)}
@@ -220,7 +220,7 @@ export default function DefaultPage() {
                   toggleTab === idx ? "active-link" : ""
                 } border border-black rounded-md`}
               >
-                Tab {idx + 1}
+                Tab {tab.tabNo}
               </button>
               <button
                 onClick={() => handleDeleteTab(idx)}
