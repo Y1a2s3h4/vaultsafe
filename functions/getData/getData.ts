@@ -32,7 +32,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
           statusCode: 404, 
           urlName, 
           tabsList: [{
-            tabNo: 0,
+            tabNo: 1,
             tabDetail: ""
           }]
           })

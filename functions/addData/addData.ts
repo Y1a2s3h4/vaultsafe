@@ -35,7 +35,7 @@ export const handler: Handler = async (event: HandlerEvent) => {
     vaultSafeObject.save();
     const {['pswd']:_, ...rest} = vaultSafeObject.toObject()
 
-    return { statusCode: 200, body: JSON.stringify({ statusCode: 200, ...rest.toObject() }) };
+    return { statusCode: 200, body: JSON.stringify({ statusCode: 200, ...rest}) };
   } catch (error) {
     console.log(error)
     return { statusCode: 500, body: JSON.stringify({ statusCode: 500, ...error}) };

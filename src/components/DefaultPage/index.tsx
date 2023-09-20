@@ -187,7 +187,14 @@ export default function DefaultPage() {
       <ReactHotkeys 
         keyName="ctrl+s" 
         onKeyDown={(keyName,e,handle)=>e.preventDefault()}
-        onKeyUp={handleSave}
+        onKeyUp={(keyName,e,handle)=>{
+          e.preventDefault()
+          if(!disableSave){
+            handleSave()
+          } else {
+            alert("Please make some changes to save")
+          }
+        }}
         filter={(e) => {
           return true;
         }}
