@@ -11,7 +11,6 @@ import {
   verifyUrlPass,
   addTabsData,
   updateTabsData,
-  deleteTabsData,
 } from "../../redux/slices/tabs.slices";
 
 import { v4 } from "uuid";
@@ -21,6 +20,7 @@ import Swal from "sweetalert2";
 import withReactContent from "sweetalert2-react-content";
 import { TabsDataState } from "../../types";
 import ErrorBoundary from "../ErrorBoundary";
+import ReactHotkeys from "react-hot-keys";
 
 export default function DefaultPage() {
   const location = useLocation();
@@ -184,13 +184,14 @@ export default function DefaultPage() {
 
   return (
     <>
-      {/* <Hotkeys 
+      <ReactHotkeys 
         keyName="ctrl+s" 
-        onKeyDown={handleSave}
-        filter={(event) => {
+        onKeyDown={(keyName,e,handle)=>e.preventDefault()}
+        onKeyUp={handleSave}
+        filter={(e) => {
           return true;
         }}
-      > */}
+      >
 
       <div className="flex flex-col gap-5 items-center h-screen px-5">
         {!(location.pathname === "/new") && (
@@ -265,7 +266,7 @@ export default function DefaultPage() {
           </ErrorBoundary>
         </div>
       </div>
-      {/* </Hotkeys> */}
+    </ReactHotkeys>
     </>
   );
 }
