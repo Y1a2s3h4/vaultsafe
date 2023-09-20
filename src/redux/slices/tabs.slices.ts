@@ -73,7 +73,7 @@ const initialState: TabsDataState = {
   isLoading: false,
   isError: false,
   data: {
-    tabsList: [],
+    tabsList: [{ tabNo: 1, tabDetail: "" }],
   },
 };
 export const tabHandlerSlice = createSlice({
