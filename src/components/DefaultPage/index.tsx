@@ -166,12 +166,23 @@ export default function DefaultPage() {
     }
   }
   function handleDeleteTab(idx: number) {
-    setDisableSave(false);
-    dispatch(
-      deleteTab({
-        idx,
-      })
-    );
+    if(tabs.data.tabsList.length > 1){
+      setDisableSave(false);
+      dispatch(
+        deleteTab({
+          idx,
+        })
+      );
+      setToggleTab(idx-1)
+    } else {
+      MySwal.fire({
+        icon: "error",
+        title: "Oops...",
+        text: "You can't delete first tab!",
+        confirmButtonText: "Okay!",
+        confirmButtonColor: "#3085d6",
+      });
+    }
     // if(tabs.data._id && tabs.data.tabsList[idx]._id && tabs.data.statusCode === 200){
     //   dispatch(
     //     deleteTabsData({
