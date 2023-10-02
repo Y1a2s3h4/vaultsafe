@@ -29,6 +29,7 @@ export default function DefaultPage() {
   const MySwal = withReactContent(Swal);
 
   const [toggleTab, setToggleTab] = useState(0);
+  const [isAuthorised, setIsAuthorised] = useState(false);
   const [disableSave, setDisableSave] = useState(true);
   const tabs: TabsDataState = useSelector(
     (state: RootState) => state.tabHandler
@@ -53,7 +54,7 @@ export default function DefaultPage() {
         fetchTabsData(decodeURIComponent(location.pathname.slice(1)))
       )
       .then(async (res) => {
-          if(res.payload.statusCode === 200){
+          if(res.payload.statusCode === 200 && !isAuthorised){
             setDisableSave(true)
             await MySwal.fire({
               icon: "info",
@@ -82,6 +83,7 @@ export default function DefaultPage() {
             }).then((result) => {
               if (result.isConfirmed) {
                 setDisableSave(false)
+                setIsAuthorised(true)
               }
               
             })
@@ -183,14 +185,6 @@ export default function DefaultPage() {
         confirmButtonColor: "#3085d6",
       });
     }
-    // if(tabs.data._id && tabs.data.tabsList[idx]._id && tabs.data.statusCode === 200){
-    //   dispatch(
-    //     deleteTabsData({
-    //       _id: tabs.data._id,
-    //       tabId: tabs.data.tabsList[idx]._id ?? '',
-    //     })
-    //   );
-    // }
   }
 
   return (
@@ -206,7 +200,7 @@ export default function DefaultPage() {
             alert("Please make some changes to save")
           }
         }}
-        filter={(e) => {
+        filter={() => {
           return true;
         }}
       >
