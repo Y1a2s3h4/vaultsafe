@@ -80,8 +80,8 @@ export const tabHandlerSlice = createSlice({
   name: "tabsData",
   initialState,
   reducers: {
-    addNewTab: (state) => {
-      const newTab = { tabNo: state.data.tabsList.at(-1).tabNo + 1, tabDetail: "" };
+    addNewTab: (state: TabsDataState) => {
+      const newTab = { tabNo: state.data.tabsList[state.data.tabsList.length - 1].tabNo + 1, tabDetail: "" };
       state.data["tabsList"].push(newTab);
     },
     deleteTab: (state, action) => {
