@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.active-link {
+  color: #fff;
+  background-color: #171717;
+}
+.landing-wrapper .arr-right {
+  transform: translateX(0);
+  animation: move 2.8s forwards infinite ease-in-out;
+}
+@keyframes move {
+  0% {
+    transform: translateX(0);
+  }
+  50% {
+    transform: translateX(10px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}

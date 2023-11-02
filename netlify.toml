@@ -1,8 +1,0 @@
-[build]
-  functions = "functions/"
-[dev]
-  envFiles = [".env"]
-[[headers]]
-  for = "/*"
-    [headers.values]
-    Access-Control-Allow-Origin = "*"

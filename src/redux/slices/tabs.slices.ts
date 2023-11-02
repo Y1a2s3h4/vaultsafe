@@ -6,54 +6,61 @@ import {
   AddTabsDataApi,
   VerifyUrlApi,
 } from "../../types";
-const API_URL = import.meta.env.DEV
-  ? import.meta.env.VITE_API_URL_DEV
-  : import.meta.env.VITE_API_URL_PROD;
-export const fetchTabsData = createAsyncThunk(
-  "tabsData/get",
-  async (urlName: string) => {
-    const response = await fetch(`${API_URL}getData?urlName=${urlName}`);
-    return response.json();
+
+
+import bcrypt from "bcryptjs";
+
+import {genDecryptedText} from "../../utils"
+
+const API_URL = process.env.NODE_ENV === "development" ? process.env.NEXT_PUBLIC_DEV_URL : process.env.NEXT_PUBLIC_PROD_URL;
+  export const fetchTabsData = createAsyncThunk(
+    "tabsData/get",
+    async (urlName: string) => {
+    console.log("API_URL: ", API_URL, process.env.NEXT_PUBLIC_PROD_URL)
+    const response = await fetch(`/api/${urlName}`);
+    return await response.json();
   }
 );
 export const verifyUrlPass = createAsyncThunk(
   "tabsData/verify",
   async (data: VerifyUrlApi) => {
-    const response = await fetch(`${API_URL}verifyPass`, {
+    const response = await fetch(`/api/verifyPass`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-    return response.json();
+    return await response.json();
   }
 );
 
 export const addTabsData = createAsyncThunk(
   "tabsData/add",
   async (data: AddTabsDataApi) => {
-    const response = await fetch(`${API_URL}addData`, {
+    const response = await fetch(`/api/${data.urlName}`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({...data, pswd: bcrypt.hashSync(data.pswd)}),
     });
-    return response.json();
+    const tabsCurrentData = await response.json()
+    const tabsCurrentTablist = await genDecryptedText(tabsCurrentData.tabsList, data.pswd);
+    return { ...tabsCurrentData, tabsList: tabsCurrentTablist}
   }
 );
 export const updateTabsData = createAsyncThunk(
   "tabsData/update",
   async (data: UpdateTabDataApi) => {
-    const response = await fetch(`${API_URL}updateData`, {
+    const response = await fetch(`/api/${data.urlName}`, {
       method: "PATCH",
       headers: {
         "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     });
-    return response.json();
+    console.log(await response)
   }
 );
 export const deleteTabsData = createAsyncThunk(
@@ -80,6 +87,12 @@ export const tabHandlerSlice = createSlice({
   name: "tabsData",
   initialState,
   reducers: {
+    fillTabDataInStore: (state, action) => {
+      console.log("ACTION PAYLOAD: fillTabDataInStore: ", action.payload)
+      const {pswd,...rest} = action.payload
+      console.log(rest)
+      return { ...state, data: { ...rest } };
+    },
     addNewTab: (state: TabsDataState) => {
       const newTab = { tabNo: state.data.tabsList[state.data.tabsList.length - 1].tabNo + 1, tabDetail: "" };
       state.data["tabsList"].push(newTab);
@@ -132,7 +145,7 @@ export const tabHandlerSlice = createSlice({
       .addCase(updateTabsData.fulfilled, (state, action) => {
         state.isLoading = false;
         state.isError = false;
-        state.data = { ...action.payload };
+        // state.data = { ...action.payload };
       })
       .addCase(updateTabsData.rejected, (state) => {
         state.isLoading = false;
@@ -171,6 +184,6 @@ export const tabHandlerSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { addNewTab, addCurrTabData, deleteTab } = tabHandlerSlice.actions;
+export const { addNewTab, addCurrTabData, deleteTab, fillTabDataInStore } = tabHandlerSlice.actions;
 
-export default tabHandlerSlice.reducer;
+export default tabHandlerSlice.reducer; 
