@@ -180,9 +180,11 @@ export default function PageContainer({
             ) as HTMLInputElement
           )?.value;
           if (!pass || !cpass) {
-            MySwal.showValidationMessage(`Please enter password`);
+            MySwal.showValidationMessage(`Please enter password!`);
           } else if (pass !== cpass) {
-            MySwal.showValidationMessage(`Password doesn't match`);
+            MySwal.showValidationMessage(`Password doesn't match!`);
+          } else if (pass.length >= 8 && cpass.length >= 8) {
+            MySwal.showValidationMessage(`Password should be atleast 8 characters long!`);
           }
           return { pass, cpass };
         },
