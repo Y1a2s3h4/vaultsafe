@@ -5,7 +5,6 @@ import { ErrorBoundary } from "react-error-boundary";
 import { v4 } from "uuid";
 
 export default function SubMenu({title, location, handleSave, disableSave, params}: SubMenuPropsTypes) {
-    console.log(params)
   return (
     <div key={v4()} className="flex items-start w-full md:w-4/5">
       <ErrorBoundary fallback={<h1>Sorry.. there was an error</h1>}>

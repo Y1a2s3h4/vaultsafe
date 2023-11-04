@@ -16,7 +16,6 @@ const API_URL = process.env.NODE_ENV === "development" ? process.env.NEXT_PUBLIC
   export const fetchTabsData = createAsyncThunk(
     "tabsData/get",
     async (urlName: string) => {
-    console.log("API_URL: ", API_URL, process.env.NEXT_PUBLIC_PROD_URL)
     const response = await fetch(`/api/${urlName}`);
     return await response.json();
   }
@@ -60,7 +59,7 @@ export const updateTabsData = createAsyncThunk(
       },
       body: JSON.stringify(data),
     });
-    console.log(await response)
+    (await response)
   }
 );
 export const deleteTabsData = createAsyncThunk(
@@ -88,9 +87,7 @@ export const tabHandlerSlice = createSlice({
   initialState,
   reducers: {
     fillTabDataInStore: (state, action) => {
-      console.log("ACTION PAYLOAD: fillTabDataInStore: ", action.payload)
       const {pswd,...rest} = action.payload
-      console.log(rest)
       return { ...state, data: { ...rest } };
     },
     addNewTab: (state: TabsDataState) => {

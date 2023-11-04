@@ -34,7 +34,6 @@ export default function PageContainer({
   params: { name: string };
   TabsData: TabsDataTypes;
 }) {
-  console.log(TabsData);
 
   const location = usePathname();
   const navigate = useRouter();
@@ -50,7 +49,6 @@ export default function PageContainer({
   const tabs: TabsDataState = useSelector(
     (state: RootState) => state.tabHandler
   );
-  console.log("TABS [REDUX STATE]: ", tabs);
   const dispatch = useDispatch<AppDispatch>();
 
   function handleAddNewTab() {
@@ -90,7 +88,6 @@ export default function PageContainer({
           confirmButtonText: "Unlock!",
           confirmButtonColor: "#3085d6",
         }).then(async (result) => {
-          console.log("RESULT: ", result);
           if (result.isConfirmed) {
             try {
               userPass.current = result.value
@@ -98,7 +95,6 @@ export default function PageContainer({
                 TabsData.tabsList,
                 result.value
               );
-              console.log("Decrypted Value: ", decrypVal);
               dispatch(fillTabDataInStore({ ...TabsData, tabsList: decrypVal }))
               setDisableSave(false);
               setIsAuthorised(true);

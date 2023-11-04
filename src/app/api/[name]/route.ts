@@ -10,7 +10,6 @@ export async function GET(req: Request, context: { params: { name: string } }) {
     } as ConnectOptions)
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.log(err));
-  console.log(urlName, MongoUri)
   if (!urlName) {
     const result = await VaultSafeModel.find({});
     return new Response(JSON.stringify({ statusCode: 200, ...result }), {
@@ -18,7 +17,6 @@ export async function GET(req: Request, context: { params: { name: string } }) {
     });
   } else {
     const result = await VaultSafeModel.findOne({ urlName });
-    console.log(result)
     if (!result) {
       return new Response(
         JSON.stringify({
