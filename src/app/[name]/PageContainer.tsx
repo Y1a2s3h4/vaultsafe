@@ -52,7 +52,7 @@ export default function PageContainer({
   const dispatch = useDispatch<AppDispatch>();
 
   function handleAddNewTab() {
-    dispatch(addNewTab());
+    dispatch(addNewTab({ tabNo: tabs.data.tabsList[tabs.data.tabsList.length - 1].tabNo + 1, tabDetail: "" }));
   }
   const handleAddCurrTabData = (
     e: React.ChangeEvent<HTMLTextAreaElement>,
@@ -65,6 +65,7 @@ export default function PageContainer({
   useEffect(() => {
     if (!(location === "/new")) {
       setTitle(decodeURIComponent(params.name));
+      dispatch(fillTabDataInStore({ urlName: title, tabsList: tabs.data.tabsList }))
       if (TabsData.statusCode === 200 && !isAuthorised) {
         setDisableSave(true);
         MySwal.fire({
@@ -146,7 +147,7 @@ export default function PageContainer({
     }
   }, [location]);
   async function handleSave() {
-    if (tabs.data._id && tabs.data.statusCode === 200) {
+    if (tabs.data._id && tabs.data.statusCode === 200 && userPass.current) {
       dispatch(
         updateTabsData({
           urlName: tabs.data.urlName,

@@ -4,19 +4,32 @@ import Image from "next/image";
 import { useRouter } from 'next/navigation'
 import BrandLogo from "../../public/logo.svg";
 import MenuIcon from "../../public/menu.svg";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
+
+function useWindowObj() {
+  const [location, setHash] = useState<Location | null>(null);
+
+  const retrieved = useRef(false); //To get around strict mode running the hook twice
+  useEffect(() => {
+      if (retrieved.current) return;
+      retrieved.current = true;
+      setHash(window.location);
+  }, []);
+
+  return location;
+}
+
 export default function NavbarComponent() {
   const navigate = useRouter()
-  const [location, setHash] = useState(window.location);
-
-  useEffect(() => {
-    setHash(window.location);
-  }, []);
+  const location = useWindowObj()
 
   const [toggle, setToggle] = useState(false);
   
   return (
-    <div className={`sticky top-0 left-0 z-20 max-md:px-4 max-md:py-8 py-12 px-16 max-md:bg-white md:max-lg:backdrop-blur mb-5`}>
+    <>
+      {
+        location !== null && (
+          <div className={`sticky top-0 left-0 z-20 max-md:px-4 max-md:py-8 py-12 px-16 max-md:bg-white md:max-lg:backdrop-blur mb-5`}>
       <nav className="flex justify-between">
         <div className="brand-logo">
           <Image onClick={()=>navigate.push("/")} className="max-md:w-[32px] self-center cursor-pointer" src={BrandLogo} alt="brand-logo" priority/>
@@ -138,5 +151,8 @@ export default function NavbarComponent() {
         </div>
       )}
     </div>
+        )
+      }
+    </>
   );
 }

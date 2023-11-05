@@ -11,7 +11,7 @@ export interface TabsDataState {
     tabsList: Tab[];
     statusCode?: number;
     _id?: string;
-    urlName?: string;
+    urlName: string;
     pswd?: string;
   };
 }

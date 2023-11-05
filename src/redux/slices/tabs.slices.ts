@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, Slice } from "@reduxjs/toolkit";
 import {
   TabsDataState,
   UpdateTabDataApi,
@@ -79,10 +79,11 @@ const initialState: TabsDataState = {
   isLoading: false,
   isError: false,
   data: {
+    urlName: "",
     tabsList: [{ tabNo: 1, tabDetail: "" }],
   },
 };
-export const tabHandlerSlice = createSlice({
+export const tabHandlerSlice: Slice<TabsDataState> = createSlice({
   name: "tabsData",
   initialState,
   reducers: {
@@ -90,9 +91,9 @@ export const tabHandlerSlice = createSlice({
       const {pswd,...rest} = action.payload
       return { ...state, data: { ...rest } };
     },
-    addNewTab: (state: TabsDataState) => {
-      const newTab = { tabNo: state.data.tabsList[state.data.tabsList.length - 1].tabNo + 1, tabDetail: "" };
-      state.data["tabsList"].push(newTab);
+    addNewTab: (state: TabsDataState, action) => {
+      // const newTab = { tabNo: state.data.tabsList[state.data.tabsList.length - 1].tabNo + 1, tabDetail: "" };
+      state.data["tabsList"].push(action.payload);
     },
     deleteTab: (state, action) => {
       const newTabsList = state.data["tabsList"].filter(
