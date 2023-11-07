@@ -34,7 +34,7 @@ export default function PageContainer({
   params: { name: string };
   TabsData: TabsDataTypes;
 }) {
-
+  console.log(TabsData)
   const location = usePathname();
   const navigate = useRouter();
 
@@ -246,15 +246,15 @@ export default function PageContainer({
             params={params}
           />
 
-          <TabsButton
-            handleAddNewTab={handleAddNewTab}
-            tabsList={tabs.data.tabsList}
-            toggleTab={toggleTab}
-            handleDeleteTab={handleDeleteTab}
-            setToggleTab={setToggleTab}
-          />
         </>
       )}
+      <TabsButton
+        handleAddNewTab={handleAddNewTab}
+        tabsList={tabs.data.tabsList}
+        toggleTab={toggleTab}
+        handleDeleteTab={handleDeleteTab}
+        setToggleTab={setToggleTab}
+      />
       <TextArea
         handleAddCurrTabData={handleAddCurrTabData}
         tabs={tabs}

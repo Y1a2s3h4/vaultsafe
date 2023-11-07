@@ -11,9 +11,8 @@ export async function GET(req: Request, context: { params: { name: string } }) {
     .then(() => console.log("Connected to MongoDB"))
     .catch((err) => console.log(err));
   if (!urlName) {
-    const result = await VaultSafeModel.find({});
-    return new Response(JSON.stringify({ statusCode: 200, ...result }), {
-      status: 200,
+    return new Response(JSON.stringify({ statusCode: 404, error: "urlName not provided!" }), {
+      status: 404,
     });
   } else {
     const result = await VaultSafeModel.findOne({ urlName });
